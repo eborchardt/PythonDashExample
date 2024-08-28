@@ -20,7 +20,7 @@ def get_data():
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        data = response.json()  # Assuming the response is in JSON format
+        data = response.json()
         return data
     else:
         print(f"Error: {response.status_code}")
@@ -32,13 +32,15 @@ result = get_data()
 if "searchResults" in result:
     print("Rendering search results")
     items = result["searchResults"]["items"]
+
+    # It will be necessary to use MarkDown formatting for hyperlinks and displaying images
+    # Creating the additional properties for each item in MarkDown
     for item in items:
         item["itemUrl"] = f"https://shopgoodwill.com/item/{item['itemId']}"
         item["itemMDLink"] = f"[{item['title']}]({item['itemUrl']})"
         item["image"] = f"![{item['title']}]({item['imageURL']})"
-    #     print_item_details(item)
 else:
-    print("No search results found. Perhaps the cosmos is keeping its secrets hidden.")
+    print("No search results found")
 
 app = dash.Dash(__name__)
 
@@ -47,10 +49,10 @@ app.layout = html.Div([
     dash_table.DataTable(
         id="item-grid",
         columns=[
-            {"name": "Title", "id": "itemMDLink", "presentation": "markdown", "type": "text"},
+            {"name": "Title", "id": "itemMDLink", "presentation": "markdown", "type": "text"},  # markdown presentation
             {"name": "Current Price", "id": "currentPrice"},
             {"name": "Remaining Time", "id": "remainingTime"},
-            {"name": "Image", "id": "image", "presentation": "markdown"},
+            {"name": "Image", "id": "image", "presentation": "markdown"},  # markdown presentation
         ],
         data=items,
         style_table={"height": "90vh", "overflowY": "auto"},
@@ -67,6 +69,20 @@ app.layout = html.Div([
             "overflow": "hidden",
             "textOverflow": "ellipsis",
         },
+        style_data_conditional=[
+            {
+                "if": {"column_id": "currentPrice"},
+                "text-align": "center",
+                "minWidth": "15px",
+                "maxWidth": "25px"
+            },
+            {
+                "if": {"column_id": "remainingTime"},
+                "text-align": "center",
+                "minWidth": "15px",
+                "maxWidth": "25px"
+            },
+        ],
         markdown_options={"link_target": "_blank"},
     ),
 ])
