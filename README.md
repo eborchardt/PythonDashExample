@@ -1,0 +1,2 @@
+This is just a quick example of using Dash to display some results of a web request in a Flask app using Python. <br><br>
+When the script is run, the results will be displayed at http://127.0.0.1:8050.
